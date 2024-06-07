@@ -9,7 +9,7 @@ ThisBuild / libraryDependencies ++= Seq(
   "com.ing.data" % "cassandra-jdbc-wrapper" % "4.12.0",
 //  "com.github.geirolz" %% "fly4s" % "1.0.0",
 //  "com.datastax.oss" % "java-driver-core" % "4.10.0",
-//  "com.scylladb" % "java-driver-core" % "4.15.0.0"
+  "com.scylladb" % "java-driver-core" % "4.15.0.0"
 )
 
 lazy val root = (project in file("."))
