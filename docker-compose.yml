@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  scylla:
+    image: scylladb/scylla:latest
+    container_name: scylla
+    ports:
+      - "9042:9042"
+      - "9160:9160"
+      - "10000:10000"
+    environment:
+      - SCYLLA_ARGS=--authenticator PasswordAuthenticator --authorizer CassandraAuthorizer
+    volumes:
+      - scylla-data:/var/lib/scylla
+      - scylla-conf:/etc/scylla
+
+  scylla-setup:
+    image: scylladb/scylla:latest
+    container_name: scylla-setup
+    depends_on:
+      - scylla
+    command: |
+      bash -c "
+      until cqlsh -u cassandra -p cassandra -e 'describe cluster'; do sleep 1; done
+      cqlsh -u cassandra -p cassandra -e \"CREATE ROLE admin WITH PASSWORD = 'admin' AND LOGIN = true AND SUPERUSER = true\"
+      cqlsh -u cassandra -p cassandra -e \"ALTER KEYSPACE system_auth WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };\"
+      cqlsh -u cassandra -p cassandra -e \"ALTER ROLE cassandra WITH PASSWORD = 'cassandra' AND LOGIN = false\"
+      "
+    volumes:
+      - scylla-data:/var/lib/scylla
+      - scylla-conf:/etc/scylla
+
+volumes:
+  scylla-data:
+  scylla-conf:
