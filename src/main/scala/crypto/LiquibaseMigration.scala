@@ -51,8 +51,6 @@ object LiquibaseMigration {
           changelogFilePath
         )
 
-      base.validate()
-
       base.execute()
 
     }
@@ -73,6 +71,6 @@ object LiquibaseMigrationApp extends App {
 
   val migrator = LiquibaseMigration()
 
-  LiquibaseMigration().run(dbConfig)
+  migrator.run(dbConfig)
 
 }
